@@ -4,33 +4,42 @@ import Book from "./Book";
 
 class Bookshelf extends Component {
   // categories: currentlyReading, wantToRead, read, noCategory
-  //props for Bookshelf component is an array of objects
-  //each objects represents a category
+  // props for Bookshelf component is an object where the keys are the categories
+  // and values are arrays of books for that category
   render() {
-    const [currentlyReading, read, wantToRead, noCategory] = this.props;
-    const books_by_category = [currentlyReading, read, wantToRead, noCategory];
-    // console.log("books_by_category");
-    // console.log(books_by_category);
+    // const { currentlyReading, read, wantToRead, noCategory } = this.props;
+    // const books_by_category = [currentlyReading, read, wantToRead, noCategory];
+    const { all_books: books_by_category } = this.props;
+    console.log("books_by_category");
+    console.log(books_by_category);
+    const categories = Object.keys(books_by_category);
+    console.log("categories");
+    console.log(categories);
+    console.log(books_by_category[categories[0]]);
     return (
-      <div className="bookshelf">
-        <h2 className="bookshelf-title">{`dynamically add category title for shelf ..`}</h2>
-        <div className="bookshelf-books">
-          <ol className="books-grid">
-            {books_by_category.map((a_category_obj, index) => {
-              //unpack the category object ... to pass a category array to Book component
-              const the_category_arr = Object.values(a_category_obj);
-              console.log(the_category_arr);
-              return <Book key={index} the_books={the_category_arr} />;
-            })}
-          </ol>
-        </div>
+      <div className="list-books-content">
+        {/* for each category return a bookshelf */}
+        {categories.map((a_category, cat_idx) => {
+          return (
+            <div key={cat_idx} className="bookshelf">
+              <h2 className="bookshelf-title">{`The category is: ${a_category}`}</h2>
+              <div className="bookshelf-books">
+                <ol className="books-grid">
+                  {books_by_category[a_category].map((a_book, book_idx) => {
+                    return <Book key={book_idx} the_book={a_book} />;
+                  })}
+                </ol>
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   }
 }
 
 Bookshelf.propTypes = {
-  all_books: PropTypes.array.isRequired,
+  all_books: PropTypes.object.isRequired,
 };
 
 export default Bookshelf;
