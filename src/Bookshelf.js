@@ -25,7 +25,11 @@ class Bookshelf extends Component {
               <h2 className="bookshelf-title">{`The category is: ${a_category}`}</h2>
               <div className="bookshelf-books">
                 <ol className="books-grid">
+                  {/* {console.log("we here books-grid")}
+                  {console.log(books_by_category)} */}
                   {books_by_category[a_category].map((a_book, book_idx) => {
+                    console.log("a_book");
+                    console.log(a_book);
                     return <Book key={book_idx} the_book={a_book} />;
                   })}
                 </ol>
