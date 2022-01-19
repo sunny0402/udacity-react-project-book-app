@@ -1,47 +1,20 @@
-import React from "react";
+import React, { Component } from "react";
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
 import Bookshelf from "./Bookshelf";
+import { Routes, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
+import SearchBooks from "./SearchBooks";
 
-// const the_data = {
-//   currentlyReading: [],
-//   read: [],
-//   wantToRead: [],
-//   noCategory: [],
-// };
-
-class App extends React.Component {
+class App extends Component {
   state = {
     showSearchPage: false,
-    // app_books_state: [],
-    app_books_state: {},
+    my_library_state: {},
+    all_books_query: [],
   };
 
-  // componentDidMount() {
-  //   BooksAPI.getAll().then((all_books) => {
-  //     console.log("API request: all_books");
-  //     console.log(all_books);
-  //     this.setState(() => ({ app_books_state: all_books }));
-  //     // categories: currentlyReading, wantToRead, read
-  //     // filter app_books_state by category
-  //     this.state.app_books_state.filter((a_book) => {
-  //       if (a_book.shelf === "currentlyReading") {
-  //         the_data.currentlyReading.push(a_book);
-  //       } else if (a_book.shelf === "read") {
-  //         the_data.read.push(a_book);
-  //       } else if (a_book.shelf === "wantToRead") {
-  //         the_data.wantToRead.push(a_book);
-  //       } else {
-  //         the_data.noCategory.push(a_book);
-  //       }
-  //     });
-
-  //     console.log("filter books by category and assing to the_data");
-  //     console.log(the_data);
-  //   });
-  // }
-
   componentDidMount() {
+    // get all books in my library
     BooksAPI.getAll().then((all_books) => {
       console.log("API request: all_books");
       console.log(all_books);
@@ -50,10 +23,10 @@ class App extends React.Component {
         currentlyReading: [],
         read: [],
         wantToRead: [],
-        noCategory: [],
+        // noCategory: [],
       };
-      // categories: currentlyReading, wantToRead, read, noCategory
-      // filter app_books_state by category
+      // categories: currentlyReading, wantToRead, read, remove (noCategory)
+      // filter my_library_state by category
       all_books.filter((a_book) => {
         if (a_book.shelf === "currentlyReading") {
           the_data.currentlyReading.push(a_book);
@@ -61,58 +34,72 @@ class App extends React.Component {
           the_data.read.push(a_book);
         } else if (a_book.shelf === "wantToRead") {
           the_data.wantToRead.push(a_book);
-        } else {
-          the_data.noCategory.push(a_book);
         }
+        // } else {
+        //   the_data.noCategory.push(a_book);
+        // }
       });
       console.log("filter books by category and assing to the_data");
       console.log(the_data);
-      this.setState(() => ({ app_books_state: the_data }));
-      console.log("update state with filtered data from API request");
-      console.log(this.state.app_books_state);
+      this.setState(() => ({ my_library_state: the_data }));
+      console.log(
+        "update this.state.my_library_state with filtered data from API request"
+      );
+      console.log(this.state.my_library_state);
     });
   }
 
+  // searchAllBooks(a_query) {
+  //   BooksAPI.search(a_query).then((the_response) => {
+  //     console.log(`searchAllBooks: a_query: ${a_query}`);
+  //     console.log(the_response);
+  //     // TODO: if book in my library add the shelf to the book
+  //     // return this result to SearchBooks component
+  //     this.setState((oldAppState) => ({
+  //       all_books_query: oldAppState.the_response,
+  //     }));
+  //   });
+  // }
+
+  // addBookToLib(a_book, a_shelf) {
+  //   BooksAPI.update(a_book, a_shelf).then((the_response) => {
+  //     console.log(`addBookToLib: a_book: ${a_book} a_shelf: ${a_shelf} `);
+  //     console.log(the_response);
+  //     // TODO: add selected book to library and update state of app
+  //     // this.setState((oldAppState) => ({
+  //     //   my_library_state: oldAppState.the_response,
+  //     // }));
+  //   });
+  // }
+
   render() {
-    const { app_books_state } = this.state;
-    console.log(app_books_state);
+    const { my_library_state } = this.state;
+    console.log(my_library_state);
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <button
-                className="close-search"
-                onClick={() => this.setState({ showSearchPage: false })}
-              >
-                Close
-              </button>
-              <div className="search-books-input-wrapper">
-                <input type="text" placeholder="Search by title or author" />
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid" />
-            </div>
-          </div>
-        ) : (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            <div className="list-books-content">
-              <Bookshelf all_books={app_books_state} />
-            </div>
-            <div className="open-search">
-              <button onClick={() => this.setState({ showSearchPage: true })}>
-                Add a book
-              </button>
-            </div>
-          </div>
-        )}
+        <Routes>
+          <Route
+            path="/"
+            element={<Bookshelf my_library_books={my_library_state} />}
+          />
+          <Route
+            path="/search"
+            element={<SearchBooks my_library_books={my_library_state} />}
+          />
+          {/* <Route path="/" element={<Bookshelf all_books={my_library_state} />} /> */}
+        </Routes>
+        <div className="open-search">
+          <Link to="/search">Add a book to your library</Link>
+        </div>
       </div>
     );
   }
 }
 
 export default App;
+
+// Bookshelf component needs to have a link to search
+// or Link to search in app component...
+/* <div className="open-search">
+<Link to="/search">Add a book</Link>
+</div> */
