@@ -10,7 +10,7 @@ class App extends Component {
   state = {
     showSearchPage: false,
     my_library_state: {},
-    all_books_query: [],
+    // all_books_query: [],
   };
 
   componentDidMount() {
@@ -23,9 +23,9 @@ class App extends Component {
         currentlyReading: [],
         read: [],
         wantToRead: [],
-        // noCategory: [],
+        none: [],
       };
-      // categories: currentlyReading, wantToRead, read, remove (noCategory)
+      // categories: currentlyReading, wantToRead, read, none
       // filter my_library_state by category
       all_books.filter((a_book) => {
         if (a_book.shelf === "currentlyReading") {
@@ -34,12 +34,11 @@ class App extends Component {
           the_data.read.push(a_book);
         } else if (a_book.shelf === "wantToRead") {
           the_data.wantToRead.push(a_book);
+        } else {
+          the_data.none.push(a_book);
         }
-        // } else {
-        //   the_data.noCategory.push(a_book);
-        // }
       });
-      console.log("filter books by category and assing to the_data");
+      console.log("filter books by category and assign to the_data");
       console.log(the_data);
       this.setState(() => ({ my_library_state: the_data }));
       console.log(
@@ -61,16 +60,16 @@ class App extends Component {
   //   });
   // }
 
-  // addBookToLib(a_book, a_shelf) {
-  //   BooksAPI.update(a_book, a_shelf).then((the_response) => {
-  //     console.log(`addBookToLib: a_book: ${a_book} a_shelf: ${a_shelf} `);
-  //     console.log(the_response);
-  //     // TODO: add selected book to library and update state of app
-  //     // this.setState((oldAppState) => ({
-  //     //   my_library_state: oldAppState.the_response,
-  //     // }));
-  //   });
-  // }
+  addBookToLib(a_book, a_shelf) {
+    BooksAPI.update(a_book, a_shelf).then((resp) => {
+      console.log(`addBookToLib: a_book: ${a_book} a_shelf: ${a_shelf} `);
+      console.log(resp);
+      // TODO: add selected book to library and update state of app
+      // this.setState((oldAppState) => ({
+      //   my_library_state: oldAppState.the_response,
+      // }));
+    });
+  }
 
   render() {
     const { my_library_state } = this.state;

@@ -20,21 +20,18 @@ class SearchBooks extends Component {
     }));
   };
 
+  setShelfAttribute = (a_book) => {
+    return 1;
+  };
+
   searchAllBooks = () => {
     BooksAPI.search(this.state.search).then((the_response) => {
       console.log(`searchAllBooks: typeof the_response ${typeof the_response}`);
       // TODO: if book in my library add the correct shelf attribute to the book
-      //   this.setState((oldSearchState) => ({
-      //     search_results: oldSearchState.the_response,
-      //   }));
       this.setState((oldSearchState) => ({
         search_results: the_response,
       }));
     });
-    console.log(`searchAllBooks: this.state.search ${this.state.search}`);
-    console.log(
-      `searchAllBooks: this.state.search_results: ${this.state.search_results}`
-    );
   };
 
   render() {
@@ -43,6 +40,8 @@ class SearchBooks extends Component {
     console.log(`typeof search_results: ${typeof search_results}`);
     const the_keys = Object.keys(search_results);
     console.log(`the_keys: ${the_keys}`);
+
+    const { my_library_books } = this.props;
 
     // Maybe need to filter search_results as in showingContacts
 
@@ -64,7 +63,12 @@ class SearchBooks extends Component {
         <div className="search-books-results">
           <ol className="books-grid">
             {the_keys.map((a_key, a_index) => {
-              return <li>{search_results[a_key].title}</li>;
+              return (
+                <li key={a_index}>
+                  Title: {search_results[a_key].title}
+                  Shelf: {search_results[a_key].shelf}
+                </li>
+              );
             })}
           </ol>
         </div>

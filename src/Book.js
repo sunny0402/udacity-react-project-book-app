@@ -7,6 +7,11 @@ const Book = (props) => {
   console.log("props for Book component");
   console.log(the_book);
   //const book_info_keys = Object.keys(the_book);
+  if (the_book.shelf) {
+    const the_shelf = the_book.shelf;
+  } else {
+    const the_shelf = "none";
+  }
 
   return (
     <div>
@@ -21,15 +26,31 @@ const Book = (props) => {
                 backgroundImage: `url(${the_book.imageLinks.thumbnail})`,
               }}
             />
+            {/* If user selects a shelf need to run OnAddBookToLib */}
+            {/* onChange */}
+            {/* A form which updates the shelf state of a book */}
+            {/* If shelf state updated need to run OnAddBookToLib */}
             <div className="book-shelf-changer">
               <select>
                 <option value="move" disabled>
                   Move to...
                 </option>
-                <option value="currentlyReading">Currently Reading</option>
-                <option value="wantToRead">Want to Read</option>
-                <option value="read">Read</option>
-                <option value="none">None</option>
+                <option value={the_book.shelf} selected>
+                  {the_book.shelf}
+                </option>
+                {/* display the other shelves */}
+                {the_book.shelf !== "currentlyReading" && (
+                  <option value="currentlyReading">Currently Reading</option>
+                )}
+                {the_book.shelf !== "read" && (
+                  <option value="read">Read</option>
+                )}
+                {the_book.shelf !== "wantToRead" && (
+                  <option value="wantToRead">Want to Read</option>
+                )}
+                {the_book.shelf !== "none" && (
+                  <option value="none">None</option>
+                )}
               </select>
             </div>
           </div>
