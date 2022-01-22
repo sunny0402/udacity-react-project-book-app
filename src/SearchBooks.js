@@ -64,10 +64,11 @@ class SearchBooks extends Component {
           <ol className="books-grid">
             {the_keys.map((a_key, a_index) => {
               return (
-                <li key={a_index}>
-                  Title: {search_results[a_key].title}
-                  Shelf: {search_results[a_key].shelf}
-                </li>
+                <Book the_book={search_results[a_key]} />
+                // <li key={a_index}>
+                //   Title: {search_results[a_key].title}
+                //   Shelf: {search_results[a_key].shelf}
+                // </li>
               );
             })}
           </ol>

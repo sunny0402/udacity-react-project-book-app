@@ -18,14 +18,26 @@ const Book = (props) => {
       <li>
         <div className="book">
           <div className="book-top">
-            <div
-              className="book-cover"
-              style={{
-                width: 128,
-                height: 193,
-                backgroundImage: `url(${the_book.imageLinks.thumbnail})`,
-              }}
-            />
+            {the_book.imageLinks ? (
+              <div
+                className="book-cover"
+                style={{
+                  width: 128,
+                  height: 193,
+                  backgroundImage: `url(${the_book.imageLinks.thumbnail})`,
+                }}
+              />
+            ) : (
+              <div
+                className="book-cover"
+                style={{
+                  width: 128,
+                  height: 193,
+                  backgroundImage: "url(/favicon.ico)",
+                }}
+              />
+            )}
+
             {/* If user selects a shelf need to run OnAddBookToLib */}
             {/* onChange */}
             {/* A form which updates the shelf state of a book */}
@@ -55,7 +67,9 @@ const Book = (props) => {
             </div>
           </div>
           <div className="book-title">{the_book.title}</div>
-          <div className="book-authors">{the_book.authors[0]}</div>
+          {the_book.authors && (
+            <div className="book-authors">{the_book.authors[0]}</div>
+          )}
         </div>
       </li>
     </div>
