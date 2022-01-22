@@ -115,3 +115,8 @@ showSearchPage: false,}
 
 npx npm-check-updates -u
 npm i && npm start
+
+## Debug Notes
+
+https://stackoverflow.com/questions/70715794/typeerror-minicssextractplugin-is-not-a-constructor
+npm i -D --save-exact mini-css-extract-plugin@2.4.5
