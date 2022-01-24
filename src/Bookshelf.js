@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Book from "./Book";
 
 class Bookshelf extends Component {
-  // categories: currentlyReading, wantToRead, read,None
+  // categories: currentlyReading, wantToRead, read,none
   // props for Bookshelf component is an object where the keys are the categories
   // and values are arrays of books for that category
   render() {

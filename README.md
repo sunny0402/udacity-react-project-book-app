@@ -1,3 +1,7 @@
+## Deployed with Netlify
+
+https://clever-einstein-07bb11.netlify.app/
+
 # MyReads Project
 
 This is the starter template for the final assessment project for Udacity's React Fundamentals course. The goal of this template is to save you time by providing a static example of the CSS and HTML markup that may be used, but without any of the React code that is needed to complete the project. If you choose to start with this template, your job will be to add interactivity to the app by refactoring the static code in this template.
@@ -120,3 +124,6 @@ npm i && npm start
 
 https://stackoverflow.com/questions/70715794/typeerror-minicssextractplugin-is-not-a-constructor
 npm i -D --save-exact mini-css-extract-plugin@2.4.5
+
+https://dev.to/kapi1/solved-treating-warnings-as-errors-because-of-process-env-ci-true-bk5
+CI=false npm run build

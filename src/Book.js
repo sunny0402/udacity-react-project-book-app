@@ -44,9 +44,13 @@ const Book = (props) => {
             {/* If shelf state updated need to run OnAddBookToLib */}
             <div className="book-shelf-changer">
               <select>
+                {/* onAddBookToLib value="move" onChange={} */}
                 <option value="move" disabled>
                   Move to...
                 </option>
+                {console.log(
+                  `Book component: the_book.shelf: ${the_book.shelf}`
+                )}
                 <option value={the_book.shelf} selected>
                   {the_book.shelf}
                 </option>
