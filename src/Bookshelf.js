@@ -6,6 +6,10 @@ class Bookshelf extends Component {
   // categories: currentlyReading, wantToRead, read,none
   // props for Bookshelf component is an object where the keys are the categories
   // and values are arrays of books for that category
+
+  newShelf = (book_to_move, new_shelf) => {
+    this.props.onAddBookToLib(book_to_move, new_shelf);
+  };
   render() {
     const { my_library_books: books_by_category } = this.props;
     console.log("books_by_category");
@@ -33,8 +37,14 @@ class Bookshelf extends Component {
                         "Bookshelf: prop passed to book component: a_book"
                       );
                       console.log(a_book);
-                      //   need to pash the correct shelf to the Book component
-                      return <Book key={book_idx} the_book={a_book} />;
+                      return (
+                        <Book
+                          key={book_idx}
+                          the_book={a_book}
+                          onAddBookToLib={this.newShelf(a_book, a_book.shelf)}
+                          //   onAddBookToLib={this.newShelf}
+                        />
+                      );
                     })}
                   </ol>
                 </div>
@@ -49,6 +59,7 @@ class Bookshelf extends Component {
 
 Bookshelf.propTypes = {
   my_library_books: PropTypes.object.isRequired,
+  onAddBookToLib: PropTypes.func.isRequired,
 };
 
 export default Bookshelf;

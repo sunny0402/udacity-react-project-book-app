@@ -113,6 +113,7 @@ class SearchBooks extends Component {
 
 SearchBooks.propTypes = {
   my_library_books: PropTypes.object.isRequired,
+  onAddBookToLib: PropTypes.func.isRequired,
   //   onSearch: PropTypes.func.isRequired,
   //   onUpdateLibrary: PropTypes.func.isRequired,
 };
