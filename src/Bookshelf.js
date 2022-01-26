@@ -4,20 +4,19 @@ import Book from "./Book";
 
 class Bookshelf extends Component {
   // categories: currentlyReading, wantToRead, read,none
-  // props for Bookshelf component is an object where the keys are the categories
-  // and values are arrays of books for that category
+  // props for Bookshelf component is an array of book objects
 
-  newShelf = (book_to_move, new_shelf) => {
-    this.props.onAddBookToLib(book_to_move, new_shelf);
-  };
+  //   newShelf = (book_to_move, new_shelf) => {
+  //     this.props.onMoveBook(book_to_move, new_shelf);
+  //   };
   render() {
-    const { my_library_books: books_by_category } = this.props;
-    console.log("books_by_category");
-    console.log(books_by_category);
-    const categories = Object.keys(books_by_category);
-    console.log("categories");
-    console.log(categories);
-    console.log(books_by_category[categories[0]]);
+    const { my_library_books, onMoveBook: newShelf } = this.props;
+    const shelf_arr = my_library_books.map((a_book) => {
+      return a_book.shelf;
+    });
+    console.log(`shelf_arr ${shelf_arr}`);
+    const shelves = [...new Set(shelf_arr)];
+    console.log(`shelves: ${shelves}`);
     return (
       <div className="list-books">
         <div className="list-books-title">
@@ -25,26 +24,24 @@ class Bookshelf extends Component {
         </div>
         <div className="list-books-content">
           {/* for each category return a bookshelf */}
-          {categories.map((a_category, cat_idx) => {
+          {shelves.map((a_shelf, shelf_idx) => {
             return (
-              <div key={cat_idx} className="bookshelf">
-                <h2 className="bookshelf-title">{`The category is: ${a_category}`}</h2>
-                {console.log(`the category is: ${a_category}`)}
+              <div key={shelf_idx} className="bookshelf">
+                <h2 className="bookshelf-title">{`The category is: ${a_shelf}`}</h2>
+                {console.log(`the shelf is: ${a_shelf}`)}
                 <div className="bookshelf-books">
                   <ol className="books-grid">
-                    {books_by_category[a_category].map((a_book, book_idx) => {
-                      console.log(
-                        "Bookshelf: prop passed to book component: a_book"
-                      );
-                      console.log(a_book);
-                      return (
-                        <Book
-                          key={book_idx}
-                          the_book={a_book}
-                          onAddBookToLib={this.newShelf(a_book, a_book.shelf)}
-                          //   onAddBookToLib={this.newShelf}
-                        />
-                      );
+                    {my_library_books.map((a_book, book_idx) => {
+                      if (a_book.shelf === a_shelf) {
+                        return (
+                          <Book
+                            key={book_idx}
+                            the_book={a_book}
+                            onMoveBook={newShelf(a_book, a_book.shelf)}
+                            //   onAddBookToLib={this.newShelf}
+                          />
+                        );
+                      }
                     })}
                   </ol>
                 </div>
@@ -58,8 +55,8 @@ class Bookshelf extends Component {
 }
 
 Bookshelf.propTypes = {
-  my_library_books: PropTypes.object.isRequired,
-  onAddBookToLib: PropTypes.func.isRequired,
+  my_library_books: PropTypes.array.isRequired,
+  onMoveBook: PropTypes.func.isRequired,
 };
 
 export default Bookshelf;

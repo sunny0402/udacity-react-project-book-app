@@ -29,29 +29,30 @@ class SearchBooks extends Component {
       console.log(`searchAllBooks: typeof the_response ${typeof the_response}`); //object
 
       // TODO: if a book from the_response is in my library add the correct shelf attribute to the book
-      const { my_library_books } = this.props;
-      const { currentlyReading, wantToRead, read, none } = my_library_books;
-      const library_arr = [
-        ...currentlyReading,
-        ...wantToRead,
-        ...read,
-        ...none,
-      ];
+      const { my_library_books } = this.props; //now is same as library arr
+      //   const { currentlyReading, wantToRead, read, none } = my_library_books;
+      //   const library_arr = [
+      //     ...currentlyReading,
+      //     ...wantToRead,
+      //     ...read,
+      //     ...none,
+      //   ];
 
       console.log(
-        `searchAllBooks: library_arr[0].title  ${library_arr[0].title}`
+        `searchAllBooks: my_library_books[0].title ${my_library_books[0].title}`
       );
 
       const resp_keys = Object.keys(the_response);
       resp_keys.forEach((resp_book_key, resp_idx) => {
-        library_arr.forEach((lib_book_obj, idx) => {
+        my_library_books.forEach((lib_book_obj, idx) => {
           if (lib_book_obj.title === the_response[resp_book_key].title) {
             console.log(`!!!!:  ${lib_book_obj.shelf}`);
-            // if a book from the_response is in library_arr
+            // if a book from the_response is in my_library_books
             // add shelf attribute to the book, otherwise add none
             the_response[resp_book_key].shelf = lib_book_obj.shelf;
           }
         });
+        // if book not in my_library_books
         if (the_response[resp_book_key].shelf === undefined) {
           the_response[resp_book_key].shelf = "none";
         }
@@ -112,7 +113,7 @@ class SearchBooks extends Component {
 }
 
 SearchBooks.propTypes = {
-  my_library_books: PropTypes.object.isRequired,
+  my_library_books: PropTypes.array.isRequired,
   onAddBookToLib: PropTypes.func.isRequired,
   //   onSearch: PropTypes.func.isRequired,
   //   onUpdateLibrary: PropTypes.func.isRequired,

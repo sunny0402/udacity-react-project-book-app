@@ -23,7 +23,7 @@ class Book extends Component {
 
   onHandleSubmit = (event) => {
     event.preventDefault();
-    this.props.onAddBookToLib(this.props.the_book, this.state.the_shelf);
+    this.props.onMoveBook(this.props.the_book, this.state.the_shelf);
   };
 
   render() {
@@ -98,6 +98,6 @@ class Book extends Component {
 
 Book.propTypes = {
   the_book: PropTypes.object.isRequired,
-  onAddBookToLib: PropTypes.func.isRequired,
+  onMoveBook: PropTypes.func.isRequired,
 };
 export default Book;
