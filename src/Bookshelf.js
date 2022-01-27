@@ -37,8 +37,9 @@ class Bookshelf extends Component {
                           <Book
                             key={book_idx}
                             the_book={a_book}
-                            onMoveBook={newShelf(a_book, a_book.shelf)}
-                            //   onAddBookToLib={this.newShelf}
+                            // this would call the function here, instead pass as props
+                            // onMoveBook={newShelf(a_book, a_book.shelf)
+                            onMoveBook={newShelf}
                           />
                         );
                       }

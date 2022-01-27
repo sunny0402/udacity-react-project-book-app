@@ -19,12 +19,13 @@ class Book extends Component {
     this.setState(() => ({
       the_shelf: value,
     }));
+    this.props.onMoveBook(this.props.the_book, value);
   };
 
-  onHandleSubmit = (event) => {
-    event.preventDefault();
-    this.props.onMoveBook(this.props.the_book, this.state.the_shelf);
-  };
+  // onHandleSubmit = (event) => {
+  //   event.preventDefault();
+  //   this.props.onMoveBook(this.props.the_book, this.state.the_shelf);
+  // };
 
   render() {
     const { the_book } = this.props;
@@ -61,28 +62,26 @@ class Book extends Component {
               {/* A form which updates the shelf state of a book */}
               {/* If shelf state updated need to run OnAddBookToLib */}
               <div className="book-shelf-changer">
-                <form onSubmit={this.onHandleSubmit}>
-                  <select onChange={this.handleSelectChange}>
-                    <option value="move" disabled>
-                      Move to...
-                    </option>
-                    {console.log(`Book component: the_shelf: ${the_shelf}`)}
-                    <option value={the_shelf} selected>
-                      {the_book.shelf}
-                    </option>
-                    {/* display the other shelves */}
-                    {the_shelf !== "currentlyReading" && (
-                      <option value="currentlyReading">
-                        Currently Reading
-                      </option>
-                    )}
-                    {the_shelf !== "read" && <option value="read">Read</option>}
-                    {the_shelf !== "wantToRead" && (
-                      <option value="wantToRead">Want to Read</option>
-                    )}
-                    {the_shelf !== "none" && <option value="none">None</option>}
-                  </select>
-                </form>
+                {/* <form onSubmit={this.onHandleSubmit}> */}
+                <select onChange={this.handleSelectChange}>
+                  <option value="move" disabled>
+                    Move to...
+                  </option>
+                  {console.log(`Book component: the_shelf: ${the_shelf}`)}
+                  <option value={the_shelf} selected>
+                    {the_book.shelf}
+                  </option>
+                  {/* display the other shelves */}
+                  {the_shelf !== "currentlyReading" && (
+                    <option value="currentlyReading">Currently Reading</option>
+                  )}
+                  {the_shelf !== "read" && <option value="read">Read</option>}
+                  {the_shelf !== "wantToRead" && (
+                    <option value="wantToRead">Want to Read</option>
+                  )}
+                  {the_shelf !== "none" && <option value="none">None</option>}
+                </select>
+                {/* </form> */}
               </div>
             </div>
             <div className="book-title">{the_book.title}</div>
