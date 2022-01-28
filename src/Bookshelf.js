@@ -3,17 +3,18 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Book from "./Book";
 
+/**
+ * Bookshelf component is responsible for rendering the various shelves of the library.
+ * The library shelves include: currentlyReading, wantToRead, read.
+ * It makes use of the Book component to render the individual books.
+ */
 class Bookshelf extends Component {
-  // categories: currentlyReading, wantToRead, read,none
-  // props for Bookshelf component is an array of book objects
   render() {
     const { my_library_books, onMoveBook: newShelf } = this.props;
     const shelf_arr = my_library_books.map((a_book) => {
       return a_book.shelf;
     });
-    console.log(`shelf_arr ${shelf_arr}`);
     const shelves = [...new Set(shelf_arr)];
-    console.log(`shelves: ${shelves}`);
     return (
       <div className="list-books">
         <div className="list-books-title">
@@ -25,12 +26,19 @@ class Bookshelf extends Component {
           </Link>
         </div>
         <div className="list-books-content">
-          {/* for each category return a bookshelf */}
+          {/* For each category/shelf return a bookshelf with books that belong to it. */}
           {shelves.map((a_shelf, shelf_idx) => {
             return (
               <div key={shelf_idx} className="bookshelf">
-                <h2 className="bookshelf-title">{`The category is: ${a_shelf}`}</h2>
-                {console.log(`the shelf is: ${a_shelf}`)}
+                {a_shelf === "wantToRead" && (
+                  <h2 className="bookshelf-title">Want to Read</h2>
+                )}
+                {a_shelf === "read" && (
+                  <h2 className="bookshelf-title">Read</h2>
+                )}
+                {a_shelf === "currentlyReading" && (
+                  <h2 className="bookshelf-title">Currently Reading</h2>
+                )}
                 <div className="bookshelf-books">
                   <ol className="books-grid">
                     {my_library_books.map((a_book, book_idx) => {

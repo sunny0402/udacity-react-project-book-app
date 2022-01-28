@@ -4,6 +4,10 @@ import Book from "./Book";
 import * as BooksAPI from "./BooksAPI";
 import { Link } from "react-router-dom";
 
+/**
+ * SearchBooks component is responsible for performing BooksAPI.search().
+ * It makes use of the Book component to render the results.
+ */
 class SearchBooks extends Component {
   state = {
     search: "",
@@ -20,27 +24,16 @@ class SearchBooks extends Component {
     }));
   };
 
-  setShelfAttribute = (a_book) => {
-    return 1;
-  };
-
   searchAllBooks = () => {
     BooksAPI.search(this.state.search).then((the_response) => {
-      console.log(`searchAllBooks: typeof the_response ${typeof the_response}`); //object
-      const { my_library_books } = this.props; //now is same as library arr
-
-      console.log(
-        `searchAllBooks: my_library_books[0].title ${my_library_books[0].title}`
-      );
-
+      const { my_library_books } = this.props;
       const resp_keys = Object.keys(the_response);
+
+      // if a book from the_response is in my_library_books
+      // add shelf attribute to the book, otherwise add set the shelf as none
       resp_keys.forEach((resp_book_key, resp_idx) => {
         my_library_books.forEach((lib_book_obj, idx) => {
-          // if a book from the_response is in my_library_books
-          // add shelf attribute to the book, otherwise add none
           if (lib_book_obj.title === the_response[resp_book_key].title) {
-            console.log(`!!!!:  ${lib_book_obj.shelf}`);
-
             the_response[resp_book_key].shelf = lib_book_obj.shelf;
           }
         });
@@ -48,10 +41,6 @@ class SearchBooks extends Component {
         if (the_response[resp_book_key].shelf === undefined) {
           the_response[resp_book_key].shelf = "none";
         }
-      });
-
-      resp_keys.forEach((item, idx) => {
-        console.log(`the_response[item].shelf ${the_response[item].shelf}`);
       });
 
       this.setState((oldSearchState) => ({
@@ -62,11 +51,7 @@ class SearchBooks extends Component {
 
   render() {
     const { search, search_results } = this.state;
-    console.log(`search: ${search}`);
-    console.log(`SearchBooks: search_results: ${search_results}`);
     const the_keys = Object.keys(search_results);
-    console.log(`the_keys: ${the_keys}`);
-
     const { my_library_books, onMoveBook: newShelf } = this.props;
 
     return (
@@ -106,9 +91,3 @@ SearchBooks.propTypes = {
 };
 
 export default SearchBooks;
-
-// object with keys {title, subtitle, authors,
-//     publisher, publishedDate, description, industryIdentifiers,
-//     readingModes, pageCount, printType, categories, averageRating,
-//     ratingsCount, maturityRating, allowAnonLogging, contentVersion,
-//     imageLinks, language, previewLink, infoLink, canonicalVolumeLink, id}

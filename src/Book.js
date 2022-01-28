@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-// Take a single book object and create the UI for that book
-class Book extends Component {
-  //const book_info_keys = Object.keys(the_book);
-  // if (the_book.shelf) {
-  //   const the_shelf = the_book.shelf;
-  // } else {
-  //   const the_shelf = "none";
-  // }
+/**
+ * The Book component will take a single book object and create the UI for that book.
+ * This component also makes the call to moveBook which updates the app state.
+ * moveBook updates the backend via the BooksAPI.update method.
+ * And movebook updates the app states, specifically my_library_state.
+ */
 
+class Book extends Component {
   state = {
     the_shelf: this.props.the_book.shelf,
   };
@@ -21,19 +20,11 @@ class Book extends Component {
     this.setState(() => ({
       the_shelf: value,
     }));
-    // this.props.onMoveBook(this.props.the_book, value);
   };
-
-  // onHandleSubmit = (event) => {
-  //   event.preventDefault();
-  //   this.props.onMoveBook(this.props.the_book, this.state.the_shelf);
-  // };
 
   render() {
     const { the_book } = this.props;
     const { the_shelf } = this.state;
-    console.log("Book: the_book.shelf");
-    console.log(the_book.shelf);
     return (
       <div>
         <li>
@@ -65,7 +56,6 @@ class Book extends Component {
                   <option value="move" disabled>
                     Move to...
                   </option>
-                  {console.log(`Book component: the_shelf: ${the_shelf}`)}
                   <option value={the_shelf} selected>
                     {the_book.shelf}
                   </option>
@@ -77,7 +67,6 @@ class Book extends Component {
                   {the_shelf !== "wantToRead" && (
                     <option value="wantToRead">Want to Read</option>
                   )}
-                  {the_shelf !== "none" && <option value="none">None</option>}
                 </select>
                 {/* </form> */}
               </div>
