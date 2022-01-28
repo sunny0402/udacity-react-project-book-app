@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import Book from "./Book";
 
 class Bookshelf extends Component {
   // categories: currentlyReading, wantToRead, read,none
   // props for Bookshelf component is an array of book objects
-
-  //   newShelf = (book_to_move, new_shelf) => {
-  //     this.props.onMoveBook(book_to_move, new_shelf);
-  //   };
   render() {
     const { my_library_books, onMoveBook: newShelf } = this.props;
     const shelf_arr = my_library_books.map((a_book) => {
@@ -21,6 +18,11 @@ class Bookshelf extends Component {
       <div className="list-books">
         <div className="list-books-title">
           <h1>MyReads</h1>
+        </div>
+        <div className="open-search">
+          <Link to="/search">
+            <button />
+          </Link>
         </div>
         <div className="list-books-content">
           {/* for each category return a bookshelf */}

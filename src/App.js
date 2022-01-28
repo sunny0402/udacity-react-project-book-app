@@ -60,13 +60,20 @@ class App extends Component {
           />
           <Route
             path="/search"
-            element={<SearchBooks my_library_books={my_library_state} />}
+            element={
+              <SearchBooks
+                my_library_books={my_library_state}
+                onMoveBook={this.moveBook}
+              />
+            }
           />
           {/* <Route path="/" element={<Bookshelf all_books={my_library_state} />} /> */}
         </Routes>
-        <div className="open-search">
-          <Link to="/search">Add a book to your library</Link>
-        </div>
+        {/* <div className="open-search">
+          <Link to="/search">
+            <button>Add a book to your library</button>
+          </Link>
+        </div> */}
       </div>
     );
   }

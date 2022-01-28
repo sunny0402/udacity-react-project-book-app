@@ -15,11 +15,13 @@ class Book extends Component {
   };
 
   handleSelectChange = (event) => {
+    // event.preventDefault();
     const { value } = event.target;
+    this.props.onMoveBook(this.props.the_book, value);
     this.setState(() => ({
       the_shelf: value,
     }));
-    this.props.onMoveBook(this.props.the_book, value);
+    // this.props.onMoveBook(this.props.the_book, value);
   };
 
   // onHandleSubmit = (event) => {
@@ -57,10 +59,6 @@ class Book extends Component {
                 />
               )}
 
-              {/* If user selects a shelf need to run OnAddBookToLib */}
-              {/* onChange */}
-              {/* A form which updates the shelf state of a book */}
-              {/* If shelf state updated need to run OnAddBookToLib */}
               <div className="book-shelf-changer">
                 {/* <form onSubmit={this.onHandleSubmit}> */}
                 <select onChange={this.handleSelectChange}>
@@ -87,6 +85,11 @@ class Book extends Component {
             <div className="book-title">{the_book.title}</div>
             {the_book.authors && (
               <div className="book-authors">{the_book.authors[0]}</div>
+            )}
+            {the_book.infoLink && (
+              <div className="book-links">
+                <a href={the_book.infoLink}>View Info</a>
+              </div>
             )}
           </div>
         </li>
