@@ -20,7 +20,7 @@ class SearchBooks extends Component {
 
   updateSearch = (a_search_request) => {
     this.setState(() => ({
-      search: a_search_request.trim(),
+      search: a_search_request,
     }));
   };
 

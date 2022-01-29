@@ -10,21 +10,22 @@ import PropTypes from "prop-types";
 
 class Book extends Component {
   state = {
-    the_shelf: this.props.the_book.shelf,
+    // https://overreacted.io/writing-resilient-components/#principle-1-dont-stop-the-data-flow
+    // the_shelf: this.props.the_book.shelf, !!! Do not copy props to state !!!
+    the_shelf: "",
   };
 
   handleSelectChange = (event) => {
-    // event.preventDefault();
     const { value } = event.target;
-    this.props.onMoveBook(this.props.the_book, value);
     this.setState(() => ({
       the_shelf: value,
     }));
+    this.props.onMoveBook(this.props.the_book, value);
   };
 
   render() {
     const { the_book } = this.props;
-    const { the_shelf } = this.state;
+    const the_shelf = the_book.shelf ? the_book.shelf : "none";
     return (
       <div>
         <li>
@@ -51,24 +52,16 @@ class Book extends Component {
               )}
 
               <div className="book-shelf-changer">
-                {/* <form onSubmit={this.onHandleSubmit}> */}
-                <select onChange={this.handleSelectChange}>
+                <select value={the_shelf} onChange={this.handleSelectChange}>
                   <option value="move" disabled>
                     Move to...
                   </option>
-                  <option value={the_shelf} selected>
-                    {the_book.shelf}
-                  </option>
-                  {/* display the other shelves */}
-                  {the_shelf !== "currentlyReading" && (
-                    <option value="currentlyReading">Currently Reading</option>
-                  )}
-                  {the_shelf !== "read" && <option value="read">Read</option>}
-                  {the_shelf !== "wantToRead" && (
-                    <option value="wantToRead">Want to Read</option>
-                  )}
+                  <option value="currentlyReading">Currently Reading</option>
+                  <option value="read">Read</option>
+                  <option value="wantToRead">Want to Read</option>
+                  {/* only display none shelf for books from search results which begin with an undefined shelf property */}
+                  {the_shelf === "none" && <option value="none">None</option>}
                 </select>
-                {/* </form> */}
               </div>
             </div>
             <div className="book-title">{the_book.title}</div>
