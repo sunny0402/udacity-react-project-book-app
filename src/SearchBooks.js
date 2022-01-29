@@ -14,9 +14,23 @@ class SearchBooks extends Component {
     search_results: [],
   };
 
+  myDebounce = (a_function, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => a_function(...args), delay);
+    };
+  };
+
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.state.search !== prevState.search) this.searchAllBooks();
+    if (this.state.search !== prevState.search) {
+      this.searchAllBooks();
+    }
   }
+
+  debounceUpdateSearch = (debounced_search_req) => {
+    this.myDebounce(this.updateSearch(debounced_search_req), 1000);
+  };
 
   updateSearch = (a_search_request) => {
     this.setState(() => ({
@@ -25,6 +39,7 @@ class SearchBooks extends Component {
   };
 
   searchAllBooks = () => {
+    console.log("Make API search request: ", this.state.search);
     BooksAPI.search(this.state.search).then((the_response) => {
       const { my_library_books } = this.props;
       const resp_keys = Object.keys(the_response);
@@ -63,7 +78,9 @@ class SearchBooks extends Component {
               type="text"
               placeholder="Search by title or author"
               value={search}
-              onChange={(event) => this.updateSearch(event.target.value)}
+              onChange={(event) =>
+                this.debounceUpdateSearch(event.target.value)
+              }
             />
           </div>
         </div>
