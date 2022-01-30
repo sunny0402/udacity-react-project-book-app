@@ -9,10 +9,20 @@ import { Link } from "react-router-dom";
  * It makes use of the Book component to render the results.
  */
 class SearchBooks extends Component {
-  state = {
-    search: "",
-    search_results: [],
-  };
+  constructor(props) {
+    super(props);
+    this.debounceSearch = this.myDebounce(this.searchAllBooks, 1000);
+
+    this.state = {
+      search: "",
+      search_results: [],
+    };
+  }
+
+  /**
+   * Debounce lets us make multiple calls to a function and
+   * only run that function after a delay from when the last call was made.
+   */
 
   myDebounce = (a_function, delay) => {
     let timer;
@@ -22,20 +32,23 @@ class SearchBooks extends Component {
     };
   };
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.state.search !== prevState.search) {
-      this.searchAllBooks();
-    }
-  }
-
-  debounceUpdateSearch = (debounced_search_req) => {
-    this.myDebounce(this.updateSearch(debounced_search_req), 1000);
-  };
+  /**
+   * Since run setState with every new search request
+   * do not need the componentDidUpdate lifecycle method.
+   * From docs: setState() schedules an update to a component’s state object.
+   * When state changes, the component responds by re-rendering.
+   */
+  //   componentDidUpdate(prevProps, prevState, snapshot) {
+  //     if (this.state.search !== prevState.search) {
+  //       this.searchAllBooks();
+  //     }
+  //   }
 
   updateSearch = (a_search_request) => {
     this.setState(() => ({
       search: a_search_request,
     }));
+    this.debounceSearch(a_search_request);
   };
 
   searchAllBooks = () => {
@@ -78,9 +91,7 @@ class SearchBooks extends Component {
               type="text"
               placeholder="Search by title or author"
               value={search}
-              onChange={(event) =>
-                this.debounceUpdateSearch(event.target.value)
-              }
+              onChange={(event) => this.updateSearch(event.target.value)}
             />
           </div>
         </div>
