@@ -29,7 +29,7 @@ class Bookshelf extends Component {
           {/* For each category/shelf return a bookshelf with books that belong to it. */}
           {shelves.map((a_shelf, shelf_idx) => {
             return (
-              <div key={shelf_idx} className="bookshelf">
+              <div key={a_shelf} className="bookshelf">
                 {a_shelf === "wantToRead" && (
                   <h2 className="bookshelf-title">Want to Read</h2>
                 )}

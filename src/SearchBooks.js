@@ -105,6 +105,7 @@ class SearchBooks extends Component {
     this.state = {
       search: "",
       search_results: [],
+      suggestion: "",
     };
   }
 
@@ -122,7 +123,6 @@ class SearchBooks extends Component {
   };
 
   updateSearch = (a_search_request) => {
-    // validate search ... no this function already updates state and runs debounce
     this.setState(() => ({
       search: a_search_request,
     }));
@@ -132,6 +132,32 @@ class SearchBooks extends Component {
   validateSearch = (search_request) => {
     const formatted_request = search_request.toLowerCase();
     return formatted_available_search_terms.includes(formatted_request);
+  };
+
+  makeSearchSuggestion = (invalid_query) => {
+    console.log(`makeSearchSuggestion: invalid_query: ${invalid_query}`);
+    let random_term_idx = Math.floor(
+      Math.random() * formatted_available_search_terms.length
+    );
+    let app_suggestion =
+      invalid_query === ""
+        ? formatted_available_search_terms[random_term_idx]
+        : formatted_available_search_terms.filter((term) =>
+            term
+              .toLowerCase()
+              .includes(invalid_query.toLocaleLowerCase().slice(0, 2))
+          );
+    this.setState({
+      suggestion: app_suggestion,
+    });
+  };
+
+  onSuggestionClick = (event) => {
+    event.preventDefault();
+    console.log(
+      `onSuggestionClick: event.target.textContent ${event.target.textContent}`
+    );
+    this.updateSearch(event.target.textContent);
   };
 
   searchAllBooks = () => {
@@ -152,7 +178,8 @@ class SearchBooks extends Component {
         BooksAPI.search(this.state.search).then((the_response) => {
           const { my_library_books } = this.props;
 
-          //TODO: if the_response undefined invalid search
+          //TODO: The validation is weak so the response may be undefined
+
           const resp_keys = Object.keys(the_response);
 
           // if a book from the_response is in my_library_books
@@ -174,11 +201,15 @@ class SearchBooks extends Component {
           }));
         });
       }
+      //If didn't pass validation make a search suggestion
+      else {
+        this.makeSearchSuggestion(this.state.search);
+      }
     }
   };
 
   render() {
-    const { search, search_results } = this.state;
+    const { search, search_results, suggestion } = this.state;
     const the_keys = Object.keys(search_results);
     const { my_library_books, onMoveBook: newShelf } = this.props;
 
@@ -189,10 +220,26 @@ class SearchBooks extends Component {
           <div className="search-books-input-wrapper">
             <input
               type="text"
-              placeholder="Search by title or author"
+              placeholder='some valid search terms: "cook", "Homer", "mystery"'
               value={search}
               onChange={(event) => this.updateSearch(event.target.value)}
             />
+            {suggestion.length > 0 && (
+              <ul className="list-group">
+                {suggestion.map((a_suggestion, idx) => {
+                  return (
+                    <a
+                      href="#"
+                      key={a_suggestion}
+                      className="list-group-item"
+                      onClick={this.onSuggestionClick}
+                    >
+                      {a_suggestion}
+                    </a>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </div>
         {/* if search results NOT empty and 
