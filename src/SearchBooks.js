@@ -157,14 +157,17 @@ class SearchBooks extends Component {
     console.log(
       `onSuggestionClick: event.target.textContent ${event.target.textContent}`
     );
+    // clear suggestion
+    this.setState({ suggestion: "" });
     this.updateSearch(event.target.textContent);
   };
 
   searchAllBooks = () => {
     if (this.state.search.trim() === "") {
-      //make search results empty so that nothing renders
+      //make search results and suggestion empty so nothing displays
       this.setState(() => ({
         search_results: "",
+        suggestion: "",
       }));
     } else {
       console.log(
@@ -176,29 +179,34 @@ class SearchBooks extends Component {
       console.log(`pass validation? ${this.validateSearch(this.state.search)}`);
       if (this.validateSearch(this.state.search)) {
         BooksAPI.search(this.state.search).then((the_response) => {
-          const { my_library_books } = this.props;
+          //The validation is weak so the server response may be undefined.
+          if (the_response) {
+            const { my_library_books } = this.props;
 
-          //TODO: The validation is weak so the response may be undefined
+            const resp_keys = Object.keys(the_response);
 
-          const resp_keys = Object.keys(the_response);
-
-          // if a book from the_response is in my_library_books
-          // add shelf attribute to the book, otherwise set the shelf as none
-          resp_keys.forEach((resp_book_key, resp_idx) => {
-            my_library_books.forEach((lib_book_obj, idx) => {
-              if (lib_book_obj.title === the_response[resp_book_key].title) {
-                the_response[resp_book_key].shelf = lib_book_obj.shelf;
+            // if a book from the_response is in my_library_books
+            // add shelf attribute to the book, otherwise set the shelf as none
+            resp_keys.forEach((resp_book_key, resp_idx) => {
+              my_library_books.forEach((lib_book_obj, idx) => {
+                if (lib_book_obj.title === the_response[resp_book_key].title) {
+                  the_response[resp_book_key].shelf = lib_book_obj.shelf;
+                }
+              });
+              // if book not in my_library_books
+              if (the_response[resp_book_key].shelf === undefined) {
+                the_response[resp_book_key].shelf = "none";
               }
             });
-            // if book not in my_library_books
-            if (the_response[resp_book_key].shelf === undefined) {
-              the_response[resp_book_key].shelf = "none";
-            }
-          });
 
-          this.setState(() => ({
-            search_results: the_response,
-          }));
+            this.setState(() => ({
+              search_results: the_response,
+            }));
+          } // !! close if(the_response)
+          else {
+            // handle undefined
+            this.makeSearchSuggestion(this.state.search);
+          }
         });
       }
       //If didn't pass validation make a search suggestion
@@ -224,27 +232,32 @@ class SearchBooks extends Component {
               value={search}
               onChange={(event) => this.updateSearch(event.target.value)}
             />
+
             {suggestion.length > 0 && (
-              <ul className="list-group">
-                {suggestion.map((a_suggestion, idx) => {
-                  return (
-                    <a
-                      href="#"
-                      key={a_suggestion}
-                      className="list-group-item"
-                      onClick={this.onSuggestionClick}
-                    >
-                      {a_suggestion}
-                    </a>
-                  );
-                })}
-              </ul>
+              <div className="suggestion-wrapper">
+                <ul className="suggestions-list">
+                  {/* <p>App cannot handle all terms. Try some of these:</p> */}
+                  {suggestion.map((a_suggestion, idx) => {
+                    return (
+                      <li key={a_suggestion} className="suggestion-list-item">
+                        <a
+                          href="#"
+                          key={a_suggestion}
+                          className="suggestion-list-link"
+                          onClick={this.onSuggestionClick}
+                        >
+                          {a_suggestion}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             )}
           </div>
         </div>
-        {/* if search results NOT empty and 
-        NOT undefined (invalid query) then display results */}
-        {search_results && (
+        {/* If there are no search suggestions, meaning we have a valid search request, then diplay results. */}
+        {suggestion.length <= 0 && search_results && (
           <div className="search-books-results">
             <ol className="books-grid">
               {the_keys.map((a_key, a_index) => {
