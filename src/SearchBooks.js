@@ -135,7 +135,6 @@ class SearchBooks extends Component {
   };
 
   makeSearchSuggestion = (invalid_query) => {
-    console.log(`makeSearchSuggestion: invalid_query: ${invalid_query}`);
     let random_term_idx = Math.floor(
       Math.random() * formatted_available_search_terms.length
     );
@@ -143,9 +142,7 @@ class SearchBooks extends Component {
       invalid_query === ""
         ? formatted_available_search_terms[random_term_idx]
         : formatted_available_search_terms.filter((term) =>
-            term
-              .toLowerCase()
-              .includes(invalid_query.toLocaleLowerCase().slice(0, 2))
+            term.startsWith(invalid_query.toLocaleLowerCase())
           );
     this.setState({
       suggestion: app_suggestion,
@@ -283,15 +280,3 @@ SearchBooks.propTypes = {
 };
 
 export default SearchBooks;
-
-/**
- * Since run setState with every new search request
- * do not need the componentDidUpdate lifecycle method.
- * From docs: setState() schedules an update to a component’s state object.
- * When state changes, the component responds by re-rendering.
- */
-//   componentDidUpdate(prevProps, prevState, snapshot) {
-//     if (this.state.search !== prevState.search) {
-//       this.searchAllBooks();
-//     }
-//   }
