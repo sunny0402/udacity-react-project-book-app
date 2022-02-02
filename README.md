@@ -1,6 +1,6 @@
 ## Deployed with Netlify
 
-https://clever-einstein-07bb11.netlify.app/
+https://alexbookapp.netlify.app/
 
 # MyReads Project
 

@@ -151,9 +151,6 @@ class SearchBooks extends Component {
 
   onSuggestionClick = (event) => {
     event.preventDefault();
-    console.log(
-      `onSuggestionClick: event.target.textContent ${event.target.textContent}`
-    );
     // clear suggestion
     this.setState({ suggestion: "" });
     this.updateSearch(event.target.textContent);
@@ -167,13 +164,7 @@ class SearchBooks extends Component {
         suggestion: "",
       }));
     } else {
-      console.log(
-        "Search not empty so make API search request: ",
-        this.state.search
-      );
-
       //validate search request prior to making API call
-      console.log(`pass validation? ${this.validateSearch(this.state.search)}`);
       if (this.validateSearch(this.state.search)) {
         BooksAPI.search(this.state.search).then((the_response) => {
           //The validation is weak so the server response may be undefined.
