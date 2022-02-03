@@ -129,11 +129,17 @@ class SearchBooks extends Component {
     this.debounceSearch(a_search_request);
   };
 
-  validateSearch = (search_request) => {
-    const formatted_request = search_request.toLowerCase();
-    return formatted_available_search_terms.includes(formatted_request);
+  //validate search based on server response
+  validateSearch = (server_response) => {
+    let valid_search = true;
+    // if (server_response.books.items.length === 0) {
+    if (server_response.error === "empty query") {
+      valid_search = false;
+    }
+    return valid_search;
   };
 
+  //Make search suggestions when user query leads to invalid response from server
   makeSearchSuggestion = (invalid_query) => {
     let random_term_idx = Math.floor(
       Math.random() * formatted_available_search_terms.length
@@ -142,7 +148,7 @@ class SearchBooks extends Component {
       invalid_query === ""
         ? formatted_available_search_terms[random_term_idx]
         : formatted_available_search_terms.filter((term) =>
-            term.startsWith(invalid_query.toLocaleLowerCase())
+            term.includes(invalid_query.toLocaleLowerCase().slice(0, 1))
           );
     this.setState({
       suggestion: app_suggestion,
@@ -164,43 +170,36 @@ class SearchBooks extends Component {
         suggestion: "",
       }));
     } else {
-      //validate search request prior to making API call
-      if (this.validateSearch(this.state.search)) {
-        BooksAPI.search(this.state.search).then((the_response) => {
-          //The validation is weak so the server response may be undefined.
-          if (the_response) {
-            const { my_library_books } = this.props;
+      BooksAPI.search(this.state.search).then((the_response) => {
+        //validate search request AFTER making API call based on server response
+        if (this.validateSearch(the_response)) {
+          const { my_library_books } = this.props;
 
-            const resp_keys = Object.keys(the_response);
+          const resp_keys = Object.keys(the_response);
 
-            // if a book from the_response is in my_library_books
-            // add shelf attribute to the book, otherwise set the shelf as none
-            resp_keys.forEach((resp_book_key, resp_idx) => {
-              my_library_books.forEach((lib_book_obj, idx) => {
-                if (lib_book_obj.title === the_response[resp_book_key].title) {
-                  the_response[resp_book_key].shelf = lib_book_obj.shelf;
-                }
-              });
-              // if book not in my_library_books
-              if (the_response[resp_book_key].shelf === undefined) {
-                the_response[resp_book_key].shelf = "none";
+          // if a book from the_response is in my_library_books
+          // add shelf attribute to the book, otherwise set the shelf as none
+          resp_keys.forEach((resp_book_key, resp_idx) => {
+            my_library_books.forEach((lib_book_obj, idx) => {
+              if (lib_book_obj.title === the_response[resp_book_key].title) {
+                the_response[resp_book_key].shelf = lib_book_obj.shelf;
               }
             });
+            // if book not in my_library_books
+            if (the_response[resp_book_key].shelf === undefined) {
+              the_response[resp_book_key].shelf = "none";
+            }
+          });
 
-            this.setState(() => ({
-              search_results: the_response,
-            }));
-          } // !! close if(the_response)
-          else {
-            // handle undefined
-            this.makeSearchSuggestion(this.state.search);
-          }
-        });
-      }
-      //If didn't pass validation make a search suggestion
-      else {
-        this.makeSearchSuggestion(this.state.search);
-      }
+          this.setState(() => ({
+            search_results: the_response,
+          }));
+        }
+        //If didn't pass validation make a search suggestion
+        else {
+          this.makeSearchSuggestion(this.state.search);
+        }
+      });
     }
   };
 
@@ -244,14 +243,15 @@ class SearchBooks extends Component {
             )}
           </div>
         </div>
-        {/* If there are no search suggestions, meaning we have a valid search request, then diplay results. */}
+        {/* If there are no search suggestions, 
+        meaning we have a valid search request, then diplay results. */}
         {suggestion.length <= 0 && search_results && (
           <div className="search-books-results">
             <ol className="books-grid">
               {the_keys.map((a_key, a_index) => {
                 return (
                   <Book
-                    key={a_index}
+                    key={a_key}
                     the_book={search_results[a_key]}
                     onMoveBook={newShelf}
                   />
