@@ -132,7 +132,6 @@ class SearchBooks extends Component {
   //validate search based on server response
   validateSearch = (server_response) => {
     let valid_search = true;
-    // if (server_response.books.items.length === 0) {
     if (server_response.error === "empty query") {
       valid_search = false;
     }
@@ -145,11 +144,16 @@ class SearchBooks extends Component {
       Math.random() * formatted_available_search_terms.length
     );
     let app_suggestion =
-      invalid_query === ""
-        ? formatted_available_search_terms[random_term_idx]
-        : formatted_available_search_terms.filter((term) =>
+      invalid_query.length === 1
+        ? formatted_available_search_terms.filter((term) =>
             term.includes(invalid_query.toLocaleLowerCase().slice(0, 1))
+          )
+        : formatted_available_search_terms.filter((term) =>
+            term.includes(invalid_query.toLocaleLowerCase().slice(0, 2))
           );
+    if (app_suggestion.length > 10) {
+      app_suggestion = app_suggestion.slice(0, 10);
+    }
     this.setState({
       suggestion: app_suggestion,
     });
@@ -197,6 +201,9 @@ class SearchBooks extends Component {
         }
         //If didn't pass validation make a search suggestion
         else {
+          this.setState({
+            search_results: [],
+          });
           this.makeSearchSuggestion(this.state.search);
         }
       });
@@ -219,8 +226,8 @@ class SearchBooks extends Component {
               value={search}
               onChange={(event) => this.updateSearch(event.target.value)}
             />
-
-            {suggestion.length > 0 && (
+            {/* Only display suggestions if there are no search results, meaning an invalid search */}
+            {suggestion.length > 0 && search_results.length === 0 && (
               <div className="suggestion-wrapper">
                 <ul className="suggestions-list">
                   {/* <p>App cannot handle all terms. Try some of these:</p> */}
@@ -243,9 +250,8 @@ class SearchBooks extends Component {
             )}
           </div>
         </div>
-        {/* If there are no search suggestions, 
-        meaning we have a valid search request, then diplay results. */}
-        {suggestion.length <= 0 && search_results && (
+
+        {search_results && (
           <div className="search-books-results">
             <ol className="books-grid">
               {the_keys.map((a_key, a_index) => {
